@@ -7,6 +7,48 @@ const prisma = new PrismaClient();
 const redisClient = createClient({ url: 'redis://localhost:6379' });
 redisClient.connect();
 
+
+/**
+ * @swagger
+ * /api/login:
+ *   post:
+ *     summary: Handles user login, including authentication and rate limiting.
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 description: The email address of the user trying to log in.
+ *               password:
+ *                 type: string
+ *                 description: The password of the user trying to log in.
+ *             required:
+ *               - email
+ *               - password
+ *     responses:
+ *       200:
+ *         description: Login successful, returns a message and the userId.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 userId:
+ *                   type: integer
+ *       401:
+ *         description: Login fails due to invalid credentials or too many attempts, returns an error message.
+ *       405:
+ *         description: If the request method is not POST, returns an error message.
+ *       500:
+ *         description: If a server error occurs, returns an error message.
+ */
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).end(`Method ${req.method} Not Allowed`);

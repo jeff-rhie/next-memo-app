@@ -3,6 +3,51 @@ import bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 
+/**
+ * @swagger
+ * /api/signup:
+ *   post:
+ *     summary: Handles user registration, including input validation and password hashing.
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 description: The email address of the user attempting to sign up. Must be a valid email format.
+ *                 example: user@example.com
+ *               password:
+ *                 type: string
+ *                 description: The password of the user attempting to sign up. Must be at least 8 characters long and include at least one letter and one number.
+ *                 example: "Password123"
+ *             required:
+ *               - email
+ *               - password
+ *     responses:
+ *       200:
+ *         description: Signup successful, returns a success message and the userId of the newly created user.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Signup successful.
+ *                 userId:
+ *                   type: integer
+ *                   example: 1
+ *       400:
+ *         description: If the input validation fails for email or password, or if the email is already in use, returns an error message indicating the reason.
+ *       405:
+ *         description: If the request method is not POST, returns an error message.
+ *       500:
+ *         description: If a server error occurs, returns an error message. The message is more detailed in development mode.
+ */
 export default async function handler(req, res) {
     console.log(req.method, req.body);
   if (req.method !== 'POST') {
